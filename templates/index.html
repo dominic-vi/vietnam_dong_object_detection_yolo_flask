@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DETECT OBJECT BY YOLOV8 - WEB FLASK FRAME WORK</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <style>
+        #video-container {
+            width: 100%;
+            margin: auto;
+        }
+        #live-video {
+            width: 100%;
+            height: auto;
+            display: none; /* Initially hide the live video */
+        }
+        
+    </style>
+</head>
+<body>
+    <div class="container">
+
+        <div id="video-container">
+            <img id="live-video" src="" alt="Live Video Feed">
+        </div>
+        <button class="button-19" role="button" id="start-feed" style="width: 200pt; margin-top: 20px;">Start Live Feed</button> <!-- Button to start the live feed -->
+        <script>
+            document.getElementById("start-feed").addEventListener("click", function() {
+            document.getElementById("live-video").style.display = "block"; // Show the live video
+                this.style.display = "none"; // Hide the button
+                fetch("/live_feed").then(response => {
+                    document.getElementById("live-video").src = response.url; // Set the live video source
+                });
+            });
+        </script>
+    
+        <hr style="margin-top: 30px;">
+    
+        <h1>Upload Image</h1>
+        <form action="/imgpred" method="post" enctype="multipart/form-data">
+            <input class="custom-file-input" type="file" name="image" accept="image/*" required>
+            <button type="submit" class="button-19" role="button" style="width: 90pt;">Upload</button>
+        </form>
+        {% if image_path %}
+            <hr style="margin-top: 30px;">
+            <h2 style="color: #4A90E2;">Object Detection Results</h2>
+            <img src="{{ image_path }}" alt="Object Detection Results" style="max-width: 100%;">
+        {% endif %}
+        <br>
+    
+        <hr style="margin-top: 20px;">
+    
+        <h1>Upload Video</h1>
+        <form action="/vidpred" method="post" enctype="multipart/form-data">
+            <input class="custom-file-input" type="file" name="file" accept="video/mp4">
+            <button  type="submit" class="button-19" role="button" style="width: 90pt;">Upload</button>
+        </form>
+
+        <div class="div" style="display: flex; gap: 40px; justify-content: center;
+  align-items: center; margin-top: 15px;">
+
+            <form id="start" method="POST" action="#">
+                <button type="submit" class="button-19" role="button" style="width: 90pt;">Start</button>
+            </form>
+
+            <form id="stop" method="POST" action="#">
+                <button type="submit" class="button-19" role="button" style="width: 90pt;">Stop</button>    
+            </form>
+
+        </div>
+
+        <hr style="margin-top: 30px;">
+
+        <div class="div" style="display: flex; justify-content: center;
+        align-items: center;">
+            <img style="margin: 30px;" id="image1">
+        </div>
+
+    </div>
+
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.0/socket.io.min.js"></script>
+<script type="text/javascript">
+    var socket = io.connect('http://' + document.domain + ':' + location.port);
+    socket.on('connect' ,function()
+    {
+     	socket.emit('check' ,{data: 'User Connected'})
+    });
+    socket.on('image', function(msg)
+    {  
+        //console.log(image)
+        const image_element=document.getElementById('image1');
+        image_element.src="data:image/jpeg;base64,"+msg;
+    });
+</script>
+
+<script type="text/javascript" charset="utf-8">
+        $(document).ready(function() {
+            $('form#start').submit(function(event) {
+                socket.emit('start');
+                return false;
+            });
+            $('form#stop').submit(function(event) {
+                socket.emit('stop');
+                return false;
+            });
+        });
+    </script>
+
+</body>
+</html>
