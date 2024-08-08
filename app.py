@@ -86,7 +86,6 @@ def background_thread(event):
 		while(cap.isOpened() and event.is_set()):
 			ret,img=cap.read()
 			if ret:
-				#img = cv2.resize(img, (0,0), fx=0.5, fy=0.5)
 				result = model.predict(img)
 				img= result[0].plot()
 				img = cv2.resize(img,(712,712))
@@ -103,12 +102,10 @@ def background_thread(event):
 
 @socketio.on('send_message')
 def message(json, methods=['GET','POST']):
-	#print("Recieved message")
 	socketio.emit('image', json )
 
 @socketio.on('connect')
 def test_connect():
-    # need visibility of the global thread object
     print('Client connected')
 
 @socketio.on("start")
