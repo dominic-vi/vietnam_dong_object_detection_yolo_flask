@@ -26,7 +26,7 @@ def home():
     return render_template('index.html')
 
 
-#Image Prediction
+#Image upload for prediction
 @app.route('/imgpred', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
@@ -58,7 +58,7 @@ def index():
     # If no file is uploaded or GET request, render the form
     return render_template('index.html', image_path=None)
 
-#Video Prediction
+#Video upload
 @app.route('/vidpred', methods=['GET', 'POST'])
 def upload_video():
     if request.method == 'POST':
@@ -77,34 +77,7 @@ def upload_video():
     return render_template('index.html')
 
 
-def generate_frames(video_path):
-    cap = cv2.VideoCapture(video_path)
-    
-    while cap.isOpened():
-        success, frame = cap.read()
-        if success:
-            results = model(frame)
-            annotated_frame = results[0].plot()
-            ret, buffer = cv2.imencode('.jpg', annotated_frame)
-            frame_bytes = buffer.tobytes()
-            yield (b'--frame\r\n'
-                   b'Content-Type: image/jpeg\r\n\r\n' + frame_bytes + b'\r\n')
-        else:
-            break
-    cap.release()
-
-
-@app.route('/video_feed')
-def video_feed():
-    video_path = request.args.get('video_path', None)
-    
-    if video_path:
-        return Response(generate_frames(video_path), mimetype='multipart/x-mixed-replace; boundary=frame')
-    else:
-        return 'Error: No video file provided.'
-
-
-#Testing with SocketIO
+#Predict with SocketIO
 def background_thread(event):
 	#cap=cv2.VideoCapture(1)
 	cap=cv2.VideoCapture(r"static\uploaded_video.mp4")
