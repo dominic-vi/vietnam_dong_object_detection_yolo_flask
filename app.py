@@ -18,7 +18,7 @@ thread_event = Event()
 
 
 # Load the YOLOv8 model
-model = YOLO(r'weights\yolov8n.pt')
+model = YOLO(r'weights\yolov8s_vnd_300.pt')
 
 
 @app.route('/')
@@ -132,7 +132,7 @@ def live_feed():
     return Response(generate_live_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 def generate_live_frames():
-    cap = cv2.VideoCapture(1)  # 0 represents the default webcam
+    cap = cv2.VideoCapture(0)  # 0 represents the default webcam
 
     while True:
         success, frame = cap.read()
