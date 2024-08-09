@@ -132,7 +132,7 @@ def live_feed():
     return Response(generate_live_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 def generate_live_frames():
-    cap = cv2.VideoCapture(1)  # 0 represents the default webcam
+    cap = cv2.VideoCapture(0)  # 0 represents the default webcam
 
     while True:
         success, frame = cap.read()
