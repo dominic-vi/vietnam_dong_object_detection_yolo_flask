@@ -18,7 +18,7 @@ thread_event = Event()
 
 
 # Load the YOLOv8 model
-model = YOLO(r'weights\yolov8n.pt')
+model = YOLO(r'weights\yolov8s_vnd_300.pt')
 
 
 @app.route('/')
