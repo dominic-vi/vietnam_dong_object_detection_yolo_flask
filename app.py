@@ -18,7 +18,7 @@ thread_event = Event()
 
 
 # Load the YOLOv8 model
-model = YOLO(r'/usr/src/app/weights/yolov8s_vnd_300.pt')
+model = YOLO(r'./weights/yolov8s_vnd_300.pt')
 
 
 @app.route('/')
@@ -39,7 +39,7 @@ def index():
             return redirect(request.url)
         if file:
             # Save the uploaded image to a temporary location
-            image_path = r"/usr/src/app/static/uploaded_image.jpg"
+            image_path = r"./static/uploaded_image.jpg"
             file.save(image_path)
             # Run inference on the uploaded image
             results = model(image_path)  # results list
@@ -49,7 +49,7 @@ def index():
                 im_bgr = r.plot()  # BGR-order numpy array
                 im_rgb = Image.fromarray(im_bgr[..., ::-1])  # RGB-order PIL image
                 # Save the result image
-                result_image_path = r"/usr/src/app/static/result_image.jpg"
+                result_image_path = r"./static/result_image.jpg"
                 im_rgb.save(result_image_path)
             # Remove the uploaded image
             os.remove(image_path)
@@ -80,7 +80,7 @@ def upload_video():
 #Predict with SocketIO
 def background_thread(event):
 	#cap=cv2.VideoCapture(1)
-	cap=cv2.VideoCapture(r"/usr/src/app/static/uploaded_video.mp4")
+	cap=cv2.VideoCapture(r"./static/uploaded_video.mp4")
 	global thread
 	try:
 		while(cap.isOpened() and event.is_set()):
