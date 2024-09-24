@@ -1,0 +1,8 @@
+version: "3.8"
+
+services:
+  app:
+    image: vnd-detection-app
+    ports:
+      - "2607:2607"
+    restart: unless-stopped
